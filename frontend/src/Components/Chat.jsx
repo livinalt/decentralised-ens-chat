@@ -1,104 +1,99 @@
 import React, { useState, useEffect } from 'react';
-import { configureWeb3Modal } from "./connection";
+import { useWeb3ModalAccount, useWeb3ModalProvider,} from "@web3modal/ethers/react";
+import { getChatContract } from '../constants/contracts'; // Import the ChatDapp contract ABI
+import { getProvider } from "../constants/providers";
 import { ethers } from 'ethers';
-// import ChatDappContract from './contracts/ChatDapp.json';
+import ABI  from '../constants/ChatABI.json'; // Import the ChatDapp contract ABI
 
-configureWeb3Modal();
-
-function Chat() {
-  const [web3Modal, setWeb3Modal] = useState(null);
-  const [provider, setProvider] = useState(null);
-  const [chatContract, setChatContract] = useState(null);
+const Chat = () => {
   const [messages, setMessages] = useState([]);
-  const [receiver, setReceiver] = useState('');
-  const [message, setMessage] = useState('');
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [provider, setProvider] = useState();
 
+  
+  const { chainId } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
+
+  // Initialize the contract
   useEffect(() => {
-    const initWeb3Modal = async () => {
-      const web3ModalInstance = new Web3Modal();
-      setWeb3Modal(web3ModalInstance);
+    const initContract = async () => {
+      try {
+        // Connect to Ethereum provider
+        const readWriteProvider = getProvider(walletProvider);
+        const signer = await readWriteProvider.getSigner();
+
+        // Load contract
+        const contractAddress = getChatContract(signer);
+        const contract = new ethers.Contract(contractAddress, ABI, signer);
+
+        // Fetch initial messages
+        await fetchMessages();
+      } catch (error) {
+        console.error('Error initializing contract:', error);
+      }
     };
-    initWeb3Modal();
+
+    initContract();
   }, []);
 
-  const connectWallet = async () => {
-    try {
-      const provider = await web3Modal.connect();
-      setProvider(new ethers.providers.Web3Provider(provider));
-
-      // Initialize contract
-      const contractAddress = 'CONTRACT_ADDRESS'; // Replace with your deployed contract address
-      const chatContractInstance = new ethers.Contract(contractAddress, ChatDappContract.abi, provider);
-      setChatContract(chatContractInstance);
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
-    }
-  };
-
-  const sendMessage = async () => {
-    try {
-      const tx = await chatContract.sendMessage(receiver, message);
-      await tx.wait();
-      setMessage('');
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
-  };
-
+  // Function to fetch messages from the contract
   const fetchMessages = async () => {
     try {
-      // Fetch messages based on receiver
-      const fetchedMessages = await chatContract.getMessages(provider.getSigner().getAddress(), receiver);
+      setLoading(true);
+      const fetchedMessages = await contract.getMessages();
       setMessages(fetchedMessages);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching messages:', error);
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (provider && chatContract && receiver) {
-      fetchMessages();
+  // Function to send a new message
+  const sendMessage = async () => {
+    try {
+      setLoading(true);
+      await contract.sendMessage(newMessage);
+      await fetchMessages(); // Refresh messages after sending
+      setNewMessage('');
+      setLoading(false);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setLoading(false);
     }
-  }, [provider, chatContract, receiver]);
+  };
 
   return (
-    <div className="flex flex-col h-screen justify-center items-center">
-      {!provider ? (
-        <button onClick={connectWallet} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Connect Wallet
-        </button>
-      ) : (
-        <>
-          <div className="flex justify-between w-full mb-4">
-            <input
-              type="text"
-              placeholder="Receiver Address"
-              value={receiver}
-              onChange={(e) => setReceiver(e.target.value)}
-              className="p-2 border border-gray-300 rounded mr-2"
-            />
-            <button onClick={sendMessage} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Send
-            </button>
-          </div>
-          <div className="h-96 overflow-y-auto w-full border border-gray-300 p-4">
-            {messages.map((msg, index) => (
-              <div key={index} className="mb-2">
-                <p><span className="font-semibold">{msg.sender}</span>: {msg.content}</p>
-              </div>
+    <div>
+      <h1>Decentralised Chatting App</h1>
+      <div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <ul>
+            {messages.map((message, index) => (
+              <li key={index}>{message}</li>
             ))}
-          </div>
-          <input
-            type="text"
-            placeholder="Type a message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="p-2 border border-gray-300 rounded w-full mt-4"
-          />
-        </>
-      )}
+          </ul>
+        )}
+      </div>
+      <div>
+        <input
+          type="text"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Enter your message"
+        />
+        <button 
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onClick={sendMessage} disabled={!provider}>
+          Send
+        </button>
+      </div>
     </div>
   );
-}
+};
 
 export default Chat;

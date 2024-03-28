@@ -1,3 +1,4 @@
+import { Flex } from "@radix-ui/themes";
 import { useState } from "react";
 
 function Submission() {
@@ -22,7 +23,7 @@ function Submission() {
       formData.append("pinataOptions", options);
 
       const res = await fetch(
-        "https://yellow-permanent-cicada-618.mypinata.cloud/ipfs/",
+        "https://api.pinata.cloud/pinning/pinFileToIPFS",
         {
           method: "POST",
           headers: {
@@ -32,7 +33,7 @@ function Submission() {
         }
       );
       const resData = await res.json();
-    //   setImage(`https://yellow-permanent-cicada-618.mypinata.cloud/ipfs/`);
+      setImage(`${import.meta.env.VITE_ipfs_base_url + resData.IpfsHash}`);
       console.log(resData);
     } catch (error) {
       console.log(error);
@@ -41,12 +42,21 @@ function Submission() {
 
   return (
     <>
-      <div>
+      <Flex justify={"between"}>
         <img className="w-10 h-10 rounded-full" src={image} alt="Rounded avatar" />
-      </div>
+      
       <label className="form-label"> Choose File</label>
-      <input type="file" onChange={changeHandler} />
-      <button onClick={handleSubmission}>Submit</button>
+      <br/>
+      <input 
+      type="file"   
+      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"    
+      onChange={changeHandler} />
+      <br />
+      <button 
+      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      onClick={handleSubmission}
+      >Submit</button>
+      </Flex>
     </>
   );
 }
