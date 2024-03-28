@@ -22,7 +22,7 @@ function Submission() {
       formData.append("pinataOptions", options);
 
       const res = await fetch(
-        "https://coffee-blank-owl-368.mypinata.cloud/0hoSqDMO7-t9K6J0fqrUR6PB9TSlkfhEJQ-aNz_bX0Ntjv1HNW-VjAjUItx2lmk2",
+        "https://yellow-permanent-cicada-618.mypinata.cloud/ipfs/",
         {
           method: "POST",
           headers: {

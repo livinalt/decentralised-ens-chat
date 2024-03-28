@@ -1,13 +1,13 @@
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 
-// export const SUPPORTED_CHAIN = 11155111;
-export const SUPPORTED_CHAIN = 80001 ;
+export const SUPPORTED_CHAIN = 11155111;
+// export const SUPPORTED_CHAIN = 80001 ;
 
 // 2. Set chains
 const sepolia = {
     chainId: SUPPORTED_CHAIN,
-    name: 'Mumbai',
-    currency: 'Matic',
+    name: 'sepolia',
+    currency: 'sETH',
     explorerUrl: 'https://sepolia.etherscan.io',
     rpcUrl: import.meta.env.VITE_RPC_URL //get this from infura/alchemu or any provider
   }

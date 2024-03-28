@@ -12,7 +12,7 @@ const App = () => {
   return (
     <div>
       <Header />
-      {/* <Submission /> */}
+      <Submission />
       <RegisterENS />
       <GetDomain />
       <UpdateDetails />
