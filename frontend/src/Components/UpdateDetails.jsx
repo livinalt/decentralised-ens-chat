@@ -1,14 +1,18 @@
-import { useState } from 'react';
-import { useWeb3ModalAccount, useWeb3ModalProvider,} from "@web3modal/ethers/react";
+import { useState, useEffect } from 'react';
+import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/react";
 import { getEnsContract } from '../constants/contracts';
 import { getProvider } from "../constants/providers";
 
 const UpdateDetails = ({ ensContract }) => {
   const [domainName, setDomainName] = useState('');
   const [avatarURI, setAvatarURI] = useState('');
+  const [currentAvatarURI, setCurrentAvatarURI] = useState('');
 
-  const { chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
+
+  useEffect(() => {
+    
+  }, [domainName]);
 
   const handleUpdateDetails = async (e) => {
     e.preventDefault();
@@ -19,14 +23,17 @@ const UpdateDetails = ({ ensContract }) => {
     const contract = getEnsContract(signer);
 
     try {
-      // Call smart contract function to update domain details
+
       await contract.updateDomainAvatar(domainName, avatarURI);
       alert('Domain details updated successfully!');
     }
-    
     catch (error) {
       console.error('Error updating domain details:', error.message);
     }
+  };
+
+  const handlePreSubmission = () => {
+   
   };
 
   return (
@@ -67,6 +74,7 @@ const UpdateDetails = ({ ensContract }) => {
             </div>
             <button
               type="submit"
+              onClick={handlePreSubmission}
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               Update

@@ -6,14 +6,15 @@ import PhoenixLogo from '../assets/phoenix-logo.jpg'
 const Header = () => {
 
   return (
-    <div className='flex justify-between items-center'>
+    <div className='flex justify-between items-center pt-4 mx-3'>
       <div>
         <Avatar
             size="5"
             src= {PhoenixLogo}
             fallback="A"
+            className='w-50%'
           />
-          <Text>ENS DAPP</Text>
+          <Text className='text-sm font-bold px-4 text-blue-800'>ENS DAPP</Text>
       </div>
 
       <Flex justify={"between"}>

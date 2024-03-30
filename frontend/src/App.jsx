@@ -7,6 +7,7 @@ import UpdateDetails from './Components/UpdateDetails';
 import Submission from './Components/Submission';
 import { Box, Tabs, Text } from '@radix-ui/themes';
 import Chat from './Components/Chat';
+import Hero from './Components/Hero';
 
 configureWeb3Modal();
 
@@ -15,6 +16,7 @@ const App = () => {
     <div>
 
 <Header />
+<Hero />
 
 <Tabs.Root defaultValue="account">
   <Tabs.List>

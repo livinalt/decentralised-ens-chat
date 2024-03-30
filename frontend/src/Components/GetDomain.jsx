@@ -19,7 +19,7 @@ const GetDomain = ({ ensContract }) => {
 
         const contract = getEnsContract(signer);
     try {
-      // Call smart contract function to get domain details
+      
       const details = await contract.getDomainDetails(domainName);
       setDomainDetails({ name: details[0], avatarURI: details[1], owner: details[2] });
     
