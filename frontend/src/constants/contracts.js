@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import ChatABI from "./ChatABI.json";
-import EnsAbi from "./ENSABI.json";
+import EnsAbi from "./EnsABI.json";
 
 export const getEnsContract = (providerOrSigner) =>
     new ethers.Contract(

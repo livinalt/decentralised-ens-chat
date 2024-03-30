@@ -44,6 +44,7 @@ const GetDomain = ({ ensContract }) => {
               required
             />
           </div>
+          <br />
           <div>
             <button
               type="submit"
