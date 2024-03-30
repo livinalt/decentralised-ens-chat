@@ -6,7 +6,7 @@ import GetDomain from './Components/GetDomain';
 import UpdateDetails from './Components/UpdateDetails';
 import Submission from './Components/Submission';
 import { Box, Tabs, Text } from '@radix-ui/themes';
-import Chat from './Components/Chat';
+import ChatUI from './Components/ChatUI';
 import Hero from './Components/Hero';
 
 configureWeb3Modal();
@@ -45,7 +45,7 @@ const App = () => {
     </Tabs.Content>
     
     <Tabs.Content value="chat">
-        <Chat />
+        <ChatUI />
     </Tabs.Content>
   </Box>
 </Tabs.Root>  
